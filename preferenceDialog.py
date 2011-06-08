@@ -111,7 +111,7 @@ class PreferenceDialog(QDialog, ui_preferenceDialog.Ui_Dialog):
         self.cParser.set('PREFIMGPATHS','Path4',self.path4)
         self.ch4LineEdit.setText(self.path4)
         self.updateConfig()
-    
+
 def main():
     app = QApplication(sys.argv)
     window = PreferenceDialog()
@@ -120,3 +120,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

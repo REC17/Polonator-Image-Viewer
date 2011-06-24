@@ -32,7 +32,6 @@ import os
 import sys
 import math
 import numpy
-import time
 import getpass
 import ui_16bitimagewindow #,png, itertools
 from compositeImage import CompImage
@@ -45,10 +44,36 @@ import pygst, pygtk, gtk, gobject
 pygst.require("0.10")
 import gst
 
+
+
+
+#from PyQt4 import QtCore, QtGui, QtOpenGL
+#from PyQt4.phonon import *
+#from PyQt4.phonon import Phonon as Phonon
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import ConfigParser
 
+"""
+class PhononWidget(Phonon.VideoPlayer):
+    def __init__(self, parent=None):
+        super(PhononWidget, self).__init__(parent)
+        self.vW = self.videoWidget()
+#        for object in  Phonon.BackendCapabilities.availableAudioEffects():
+#            print object.description()
+
+        
+        self.mSource = Phonon.MediaSource(QString("/dev/video0"))
+        self.mObject = Phonon.MediaObject()
+
+
+        Phonon.createPath(self.mObject, self.vW)
+        self.mObject.setCurrentSource(self.mSource)
+    #    print self.isValid() #TRUE IS GOOD!
+        self.mObject.play()
+
+ #       print self.mObject.currentSource()
+"""
 
 
 class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
@@ -65,8 +90,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
             self.cParser.set('PREFIMGPATHS','Path2','None')
             self.cParser.set('PREFIMGPATHS','Path3','None')
             self.cParser.set('PREFIMGPATHS','Path4','None')
-            with open(self.currentDir+"/.config/.polImgPro.cfg", 'w') as \
-                configFile:
+            with open(self.currentDir+"/.config/.polImgPro.cfg", 'w') as configFile:
                 self.cParser.write(configFile)
         except:
             pass
@@ -91,23 +115,25 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         self.compositeview4 = self.graphicsView_5
         self.compositescene4 = QGraphicsScene()
         self.compositeview4.setScene(self.compositescene4)
-
-        
-
         self.lastcircle = []
+
         self.lastline = None
+
         self.compinstanceL = []
+
         self.zoom = "+"
         self.enableQuadMag = False
+
+
         self.process = None
         self.videoview = self.VideoStreamWindow
         self.videoscene = QGraphicsScene()
         self.videoview.setScene(self.videoscene)
+        
         self.count = 0
         self.path = QDir.homePath()
         self.connect(self.actionOpen, SIGNAL("triggered()"), self.OpenClicked)
-
-
+        
         self.selectedbrowser = self.SelectedTextBrowser
         self.livebrowser = self.LivetextBrowser
 
@@ -125,55 +151,117 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         self.Image = None
         self.dotpermission = False
 
-        self.connect(self.comboBox, SIGNAL( "currentIndexChanged(int)" )\
-                        , self.comboChange)
+        self.connect(self.comboBox, SIGNAL( "currentIndexChanged(int)" ), self.comboChange)
         self.actionPreferences.triggered.connect(self.preferencesTriggered)
+  #  def vstream(self):
+   #     freq = 100
+   #     while (freq > 0):
+   #         print freq
+   #         freq = freq - 1
+
+
+
+
+       # self.phononWidget = PhononWidget(self)
+        #self.phononWidget.setParent(self.phononFrame)
+#        self.mediaObject = Phonon.MediaObject(self)
+#        self.mediaObject.setCurrentSource(Phonon.MediaSource#QUrl("/dev/video0")))
+#        self.videoWidget = Phonon.VideoWidget(self.phononFrame)
+#        Phonon.createPath(self.mediaObject, self.videoWidget)
+
+
         self.movie_window = self.phononFrame
 
-
+# Set up the gstreamer pipeline
         self.player = gst.parse_launch ("v4l2src ! autovideosink")
+        print self.movie_window.winId()
         self.bus = self.player.get_bus()
-        
-
         self.bus.add_signal_watch()
         self.bus.enable_sync_message_emission()
         self.bus.connect("message", self.on_message)
         self.bus.connect("sync-message::element", self.on_sync_message)
 
 
-    def closeEvent(self, event):
-        print "CLOSING!"
-        self.player.set_state(gst.STATE_NULL)
-    
+
     def on_message(self, bus, message):
-        self.player.get_state()
         t = message.type
         if t == gst.MESSAGE_EOS:
             self.player.set_state(gst.STATE_NULL)
+
         elif t == gst.MESSAGE_ERROR:
             err, debug = message.parse_error()
-            
-
+            print "Error: %s" % err, debug
             self.player.set_state(gst.STATE_NULL)
 
-            if str(err) == "Could not write to resource.":            
-                self.player.set_state(gst.STATE_PLAYING)
 
 
     def on_sync_message(self, bus, message):
-
+        print "Sync Message"
         if message.structure is None:
+            print "A"
             return
         message_name = message.structure.get_name()
         if message_name == "prepare-xwindow-id":
             # Assign the viewport
             imagesink = message.src
-            imagesink.set_property("force-aspect-ratio", True)   
+            print "B"
+            imagesink.set_property("force-aspect-ratio", True)
+            print "C"            
             imagesink.set_xwindow_id(self.movie_window.winId())
+            print "D"
+
+
+
+
+
 
 
     def on_phononTestButton_pressed(self):
+        print "Test button pressed"
+        """
+        for object in self.mediaObject.outputPaths():
+            print object.source()
+        self.mediaObject.play()
+        """
+
+
         self.player.set_state(gst.STATE_PLAYING)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def preferencesTriggered(self):
         prefDialog = PreferenceDialog(self)
@@ -181,20 +269,27 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
 
     def on_pushButton_released(self):
         if self.process == None:
-            cmd = "python " + "videostream.py"
+#            currentdir = str(os.getcwd())
+            cmd = "python " + "videostream.py"#"videostream.py " + str(whilelength) #+ currentdir.replace("\\" , "/") 
+    #    cmd = "python " + cmd.replace("C:", "")
             self.process_start(cmd)
         else:
             self.process.kill()
             print "killing process"
             self.process = None
+        
+     #   print cmd
+      #  os.system(cmd)
+        #vprocess = QProcess()
+        #vprocess.start(cmd)
 
     def process_start(self, cmd):
         self.process = QProcess()
         self.process.start(cmd)
-        self.connect(self.process, SIGNAL("readyRead()"),\
-                        self.process_readyRead)
-        self.connect(self.process, SIGNAL("finished(int)"),\
-                        self.process_finished)
+
+
+        self.connect(self.process, SIGNAL("readyRead()"), self.process_readyRead)
+        self.connect(self.process, SIGNAL("finished(int)"), self.process_finished)
         
     def process_readyRead(self):
 
@@ -208,8 +303,11 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
                 stream = VideoStream(self.pic, self.count)
                 self.videoscene.clear()
                 self.videoscene.addItem(stream)
+            
         except:
             print "Empty channel"
+           # print self.pic[0]
+    #     self.process_start(cmd, self.polonatorTextArea, ['pass'], "self.process_pass()") 
 
     def process_finished(self):
         print "FINISHED!"
@@ -230,7 +328,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         print "To Do: Write Distance Function"
     
     def on_SNRbutton_released(self):
-        pathfour = self.path1
+        pathfour = "C:/Users/Roger Conturie/Desktop/Image Viewer Resources/rawimages/testImageDMD.raw"
         shape = (1000,1000)
         image_file = open(pathfour)
         # load a 1000000 length array
@@ -239,6 +337,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         image_array_2D5 = image_array_1D5.reshape(shape)
         image_8bit = (image_array_2D5 >> 6)
         
+
         fourierarray = image_array_1D5
         fourier = numpy.fft.fft(fourierarray, 1000000)
         t = numpy.arange(1000000)
@@ -248,6 +347,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         #print len(freq)
         plt.plot(freq, abs(sp.real))#, freq, sp.imag)
         plt.show()
+
         
         ##########################################
         ##########################################
@@ -325,7 +425,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
                     self.path1 = self.cParser.get('PREFIMGPATHS','Path1')
                 else:
                     self.path1 = QFileDialog.getOpenFileName(self,
-                            "Open File", self.path , str("Images (*raw)"))
+                            "Open File", self.path , str("Images (*raw)"))  #*.png *.xpm *.jpg
                 self.c1label.setText(str(self.path1.split("/")[-1]))
             
             if type == "2" or type == "A" or type == "3C":
@@ -333,7 +433,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
                     self.path2 = self.cParser.get('PREFIMGPATHS','Path2')
                 else:     
                     self.path2 = QFileDialog.getOpenFileName(self,
-                            "Open File", self.path , str("Images (*raw)"))
+                            "Open File", self.path , str("Images (*raw)"))  #*.png *.xpm *.jpg
                 self.c2label.setText(str(self.path2.split("/")[-1]))
             
             if type == "3" or type == "A" or type == "3C":
@@ -341,7 +441,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
                     self.path3 = self.cParser.get('PREFIMGPATHS','Path3')
                 else:
                     self.path3 = QFileDialog.getOpenFileName(self,
-                            "Open File", self.path , str("Images (*raw)"))
+                            "Open File", self.path , str("Images (*raw)"))  #*.png *.xpm *.jpg
                 self.c3label.setText(str(self.path3.split("/")[-1]))
             
             if type == "4" or type == "A":
@@ -349,7 +449,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
                     self.path4 = self.cParser.get('PREFIMGPATHS','Path4')
                 else:
                     self.path4 = QFileDialog.getOpenFileName(self,
-                            "Open File", self.path , str("Images (*raw)"))
+                            "Open File", self.path , str("Images (*raw)"))  #*.png *.xpm *.jpg
                 self.c4label.setText(str(self.path4.split("/")[-1]))
 
         if mode == "Clear":
@@ -381,8 +481,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
     def on_ClearDots_released(self):
         imageitems = self.scene.items()
         for item in imageitems:
-            if str(item.__class__.__name__) == "DistanceLine"\
-                or str(item.__class__.__name__) == "CircleMarker":
+            if str(item.__class__.__name__) == "DistanceLine" or str(item.__class__.__name__) == "CircleMarker":
                 self.scene.removeItem(item)
         self.scene.update()
 
@@ -402,9 +501,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
     def on_SearchButton2_released(self):
         x = self.xedit2.text()
         y = self.yedit2.text()
-        itemlist = self.compositeview1.items() + self.compositeview2.items()\
-                        + self.compositeview3.items()\
-                        + self.compositeview4.items()
+        itemlist = self.compositeview1.items() + self.compositeview2.items() + self.compositeview3.items() + self.compositeview4.items()
         if x == '' or y == '':
             pass
         else:
@@ -419,7 +516,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
     def OpenClicked(self):
 
         path = QFileDialog.getOpenFileName(self,
-            "Open File", self.path , str("Images (*raw *png)"))
+            "Open File", self.path , str("Images (*raw *png)"))  #*.png *.xpm *.jpg
         
         ftype = str(path.split(".")[-1])        
         
@@ -430,8 +527,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         if ftype == "png":
             #import png as numpy array
             Image = mpimg.imread(str(path))
-            #scale pixel values which are originally between 0 and 1 so that 
-            #their values fall between 0 and 255 
+            #scale pixel values which are originally between 0 and 1 so that their values fall between 0 and 255 
             scaledimage = 255*Image
             #reformat pixel data type from float to numpy.uint8
             scaled_num_array = numpy.array(scaledimage,dtype=numpy.uint8)
@@ -442,35 +538,25 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
             channel3 = scaled_num_array[:,:,0]
             alpha_array = 255*(numpy.ones(shape, dtype=numpy.uint8))
 
-            # apparently alpha gets stacked last. load BGRA because the byte 
-            #order in memory for each channel is stored in memory as BGRA 
-            #0xBBGGRRAA by little-endian CPU's such as intel processors for 
-            #future overlay work do  
-            #example>>>>> image_ARGB = numpy.dstack(/
-            #[image_Blue,image_Green,image_Red,alpha_array])
-            image_ARGB_3D = numpy.dstack([channel1,channel2,\
-                                            channel3,alpha_array])
+            # apparently alpha gets stacked last. load BGRA because the byte order in memory for each
+            # channel is stored in memory as BGRA 0xBBGGRRAA by little-endian CPU's such as intel processors
+            # for future overlay work do 
+            # example>>>>> image_ARGB = numpy.dstack([image_Blue,image_Green,image_Red,alpha_array])
+            image_ARGB_3D = numpy.dstack([channel1,channel2,channel3,alpha_array])
 
             # reshape to a 2D array that has 4 bytes per pixel
-            image_ARGB_2D = numpy.reshape(image_ARGB_3D,(-1,\
-                                            scaled_num_array.shape[1]*4)) 
-            #Reshape does not copy, only manipulates data structure holding the
-            #data
-
+            image_ARGB_2D = numpy.reshape(image_ARGB_3D,(-1,scaled_num_array.shape[1]*4)) # reshape does not copy, only manipulates data structure holding the data
             #Numpy buffer QImage declaration
-            Image = QImage(image_ARGB_2D.data, scaled_num_array.shape[1],\
-                            scaled_num_array.shape[0],\
-                            QImage.Format_ARGB32)
-            Image.ndarray = image_ARGB_2D  
-            # necessary to create a persistant reference to the data per QImage
-            #class
+            Image = QImage(image_ARGB_2D.data, scaled_num_array.shape[1], scaled_num_array.shape[0], QImage.Format_ARGB32)
+            Image.ndarray = image_ARGB_2D  # necessary to create a persistant reference to the data per QImage class
             target = QRectF(0, 0, Image.width(), Image.height())
             source = QRectF(0, 0, Image.width(), Image.height())
-            compImage = CompImage(target, Image, source, self.selectedbrowser,\
-                                    self.livebrowser, self.label_15, channel1) 
+            #graphicitem = GraphicsItem(target, Image, source, self.selectedbrowser, self.livebrowser, image_8bit)
+            compImage = CompImage(target, Image, source, self.selectedbrowser, self.livebrowser, self.label_15, channel1) 
             self.scene.clear()
             self.scene.addItem(compImage)
             self.Image = Image
+              #  image_array = numpy.array(Image)
 
     def ImageGenerator(self, path1, path2, path3, path4):
         width = 1000
@@ -486,15 +572,18 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         Cyan = zero_array
         Magenta = zero_array
         White = zero_array
- 
+    #    if path1 is not None and path2 is None and path3 is None:
+     #       path2 = path1
+      #      path3 = path1
+        #Red
+        
         image_array_2D1 = zero_array
         
         #Blue
         try:
             image_file = open(path1)
             # load a 1000000 length array
-            image_array_1D1 = numpy.fromfile(file=image_file,\
-                                                dtype=numpy.uint16)
+            image_array_1D1 = numpy.fromfile(file=image_file, dtype=numpy.uint16)
             image_file.close()
             image_array_2D1 = image_array_1D1.reshape(shape)
             image_8bit1 = (image_array_2D1 >> 6)
@@ -506,8 +595,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         try:
             image_file = open(path2)
             # load a 1000000 length array
-            image_array_1D2 = numpy.fromfile(file=image_file,\
-                                                dtype=numpy.uint16)
+            image_array_1D2 = numpy.fromfile(file=image_file, dtype=numpy.uint16)
             image_file.close()
             image_array_2D2 = image_array_1D2.reshape(shape)
             image_8bit2 = (image_array_2D2 >> 6)
@@ -516,8 +604,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         
         try:
             image_file = open(path3)
-            image_array_1D3 = numpy.fromfile(file=image_file,\
-                                                dtype=numpy.uint16)
+            image_array_1D3 = numpy.fromfile(file=image_file, dtype=numpy.uint16)
             image_file.close()
             image_array_2D3 = image_array_1D3.reshape(shape)
             image_8bit3 = (image_array_2D3 >> 6)
@@ -526,13 +613,13 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
             image_array_2D3 = alpha_array.reshape(shape)
         
             
-        #Georg
+        #George
+ #       if self.channel1combobox.currentText() == "Red":
 
         try:
             image_file = open(path4)
             # load a 1000000 length array
-            image_array_1D4 = numpy.fromfile(file=image_file,\
-                                                dtype=numpy.uint16)
+            image_array_1D4 = numpy.fromfile(file=image_file, dtype=numpy.uint16)
             image_file.close()
             image_array_2D4 = image_array_1D4.reshape(shape)
             image_8bit4 = (image_array_2D4 >> 6)
@@ -540,8 +627,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
             image_8bit4 = 0*alpha_array
 
 
-        channelcombolist = [self.channel1combobox, self.channel2combobox,\
-                                self.channel3combobox, self.channel4combobox]
+        channelcombolist = [self.channel1combobox, self.channel2combobox, self.channel3combobox, self.channel4combobox]
         imagelist = [image_8bit1, image_8bit2, image_8bit3, image_8bit4]
         for item in range(4):
             if channelcombolist[item].currentText() == "Red":
@@ -558,29 +644,36 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
                 Magenta = Magenta + imagelist[item]
             elif channelcombolist[item].currentText() == "White":
                 White = White + imagelist[item]
-       
         
-        image_ARGB_3D = numpy.dstack([(Blue + Cyan + Magenta + White)\
-                                        .clip(0,255).astype(numpy.uint8),\
-                                        (Green + Cyan + Yellow + White)\
-                                        .clip(0,255).astype(numpy.uint8),\
-                                        (Red + Magenta + Yellow + White)\
-                                        .clip(0,255).astype(numpy.uint8),\
-                                        alpha_array])
+        # apparently alpha gets stacked last. load BGRA because the byte order in memory for each
+        # channel is stored in memory as BGRA 0xBBGGRRAA by little-endian CPU's such as intel processors
+        # for future overlay work do 
+        # example>>>>> image_ARGB = numpy.dstack([image_Blue,image_Green,image_Red,alpha_array])
+#        max = numpy.max(image_8bit4)
+        
+        
+                    
+        
+   #     test = (Yellow + Magenta).clip(min=None,max=255).astype(numpy.uint8)
+    #    for i in range(1000):
+     #       for j in range(1000):
+      #          if Yellow[i, j] + Magenta[i, j] > 255:
+       #             print test[i, j]
+      #  min = numpy.min(image_8bit4)
+        image_ARGB_3D = numpy.dstack([(Blue + Cyan + Magenta + White).clip(0,255).astype(numpy.uint8),(Green + Cyan + Yellow + White).clip(0,255).astype(numpy.uint8), (Red + Magenta + Yellow + White).clip(0,255).astype(numpy.uint8), alpha_array])
+ #       image_ARGB_3D = numpy.dstack([(image_8bit4).clip(min=None,max=255).astype(numpy.uint8),(image_8bit4).clip(min=None,max=255).astype(numpy.uint8), (zero_array).clip(min=None,max=255).astype(numpy.uint8), alpha_array])
         
         # reshape to a 2D array that has 4 bytes per pixel
-        image_ARGB_2D = numpy.reshape(image_ARGB_3D,(-1,width*4))
+        image_ARGB_2D = numpy.reshape(image_ARGB_3D,(-1,width*4)) # reshape does not copy, only manipulates data structure holding the data
  
         #Numpy buffer QImage declaration
         Image = QImage(image_ARGB_2D.data, width, height, QImage.Format_ARGB32)
-        Image.ndarray = image_ARGB_2D  
-
+        Image.ndarray = image_ARGB_2D  # necessary to create a persistant reference to the data per QImage class
         target = QRectF(0, 0, Image.width(), Image.height())
         source = QRectF(0, 0, Image.width(), Image.height())
     
-        compImage = CompImage(self, target, Image, source,\
-                                self.selectedbrowser, self.livebrowser, \
-                                self.label_15, image_array_2D1) 
+        #graphicitem = GraphicsItem(target, Image, source, self.selectedbrowser, self.livebrowser, image_8bit)
+        compImage = CompImage(self, target, Image, source, self.selectedbrowser, self.livebrowser, self.label_15, image_array_2D1) 
         self.scene.clear()
         self.scene.addItem(compImage)
         self.Image = Image
@@ -600,25 +693,19 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         matrix.scale(horizontal, vertical)
         self.compositeview1.setMatrix(matrix)
         
-        QV2 = QuadView(self, image_8bit2, zero_array, alpha_array,\
-                            self.compositeview2, self.label12,\
-                            self.SelectedTextBrowser_2, self.LivetextBrowser_2)
+        QV2 = QuadView(self, image_8bit2, zero_array, alpha_array, self.compositeview2, self.label12, self.SelectedTextBrowser_2, self.LivetextBrowser_2)
         self.compositescene2.clear()
         self.compositescene2.addItem(QV2)
         self.compositeview2.setMatrix(matrix)
         
 
-        QV3 = QuadView(self, image_8bit3, zero_array, alpha_array,\
-                            self.compositeview3, self.label21,\
-                            self.SelectedTextBrowser_2, self.LivetextBrowser_2)
+        QV3 = QuadView(self, image_8bit3, zero_array, alpha_array, self.compositeview3, self.label21, self.SelectedTextBrowser_2, self.LivetextBrowser_2)
         self.compositescene3.clear()
         self.compositescene3.addItem(QV3)
         self.compositeview3.setMatrix(matrix)
         
 
-        QV4 = QuadView(self, image_8bit4, zero_array, alpha_array,\
-                            self.compositeview4, self.label22,\
-                            self.SelectedTextBrowser_2, self.LivetextBrowser_2)
+        QV4 = QuadView(self, image_8bit4, zero_array, alpha_array, self.compositeview4, self.label22, self.SelectedTextBrowser_2, self.LivetextBrowser_2)
         self.compositescene4.clear()
         self.compositescene4.addItem(QV4)
         self.compositeview4.setMatrix(matrix)

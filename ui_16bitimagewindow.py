@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '16bitimagewindow.ui'
 #
-# Created: Tue Jun  7 12:35:12 2011
+# Created: Fri Jun 24 10:37:48 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(False)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(-11, 0, 1389, 1079))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 1389, 1079))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.gridLayout_3 = QtGui.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
@@ -352,6 +352,10 @@ class Ui_MainWindow(object):
         self.phononTestButton = QtGui.QPushButton(self.phononTab)
         self.phononTestButton.setGeometry(QtCore.QRect(970, 30, 341, 141))
         self.phononTestButton.setObjectName(_fromUtf8("phononTestButton"))
+        self.progressBar = QtGui.QProgressBar(self.phononTab)
+        self.progressBar.setGeometry(QtCore.QRect(1040, 190, 231, 23))
+        self.progressBar.setProperty(_fromUtf8("value"), 0)
+        self.progressBar.setObjectName(_fromUtf8("progressBar"))
         self.VideoWidget.addTab(self.phononTab, _fromUtf8(""))
         self.gridLayout_3.addWidget(self.VideoWidget, 0, 0, 1, 1)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
@@ -381,7 +385,7 @@ class Ui_MainWindow(object):
         self.menuBar.addAction(self.menu_Edit.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.VideoWidget.setCurrentIndex(3)
+        self.VideoWidget.setCurrentIndex(0)
         self.channel2combobox.setCurrentIndex(1)
         self.channel3combobox.setCurrentIndex(2)
         self.channel4combobox.setCurrentIndex(3)

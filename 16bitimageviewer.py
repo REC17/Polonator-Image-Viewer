@@ -29,15 +29,10 @@ Created by Roger Conturie and Nick Conway on 2010-10-09.
 """
 
 import os
-import io
 import sys
 import math
 import numpy
 import time
-#import v4l2
-#import ctypes
-#import fcntl
-
 import v4l2capture
 import select
 import getpass
@@ -49,18 +44,8 @@ from quadView import QuadView
 from vidImage import VidImage
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
-"""
-import pygst, pygtk, gtk, gobject
-pygst.require("0.10")
-import gst
-"""
-
-
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
-
-
 import ConfigParser
 
 """
@@ -86,7 +71,6 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
                 self.cParser.write(configFile)
         except:
             pass
-
 
         self.view = self.graphicsView
         self.scene = QGraphicsScene()
@@ -145,7 +129,6 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
                         , self.comboChange)
         self.actionPreferences.triggered.connect(self.preferencesTriggered)
 
-        
 
         self.size_x = 0
         self.size_y = 0
@@ -155,13 +138,12 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         self.timer = QTimer()
         QObject.connect(self.timer, SIGNAL("timeout()"), self.updateVideo)
 
-
-
     def updateVideo(self):
         self.videoscene.removeItem(self.dispGI)
         select.select((self.video,), (), ())
         image_data = self.video.read_and_queue()
-        self.devImg = QImage(image_data, self.size_x, self.size_y, QImage.Format_RGB888)
+        self.devImg = QImage(image_data, self.size_x, self.size_y,\
+                                                     QImage.Format_RGB888)
         self.devImg.bits()
         target = QRectF(0, 0, self.devImg.width(), self.devImg.height())
         source = QRectF(0, 0, self.devImg.width(), self.devImg.height())
@@ -174,220 +156,16 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
 
     def on_lvStartPB_pressed(self):
         print "LIVE START!"
-
-
         self.video = v4l2capture.Video_device("/dev/video0")
         self.size_x, self.size_y = self.video.set_format(1280, 1024)
         self.video.create_buffers(1)
         self.video.queue_all_buffers()
         self.video.start()
-
         self.timer.start()
-        """
-        video.close()
-        devImg = QImage(image_data, size_x, size_y, QImage.Format_RGB888)
-        devImg.bits()
-        target = QRectF(0, 0, devImg.width(), devImg.height())
-        source = QRectF(0, 0, devImg.width(), devImg.height())
-        dispGI = VidImage(target, devImg, source)
-        self.scene.clear()
-        self.videoscene.addItem(dispGI)
-        self.videoscene.update()
-        """
 
     def on_lvStopPB_pressed(self):
         print "LIVE STOP!"
         self.timer.stop()
-
-
-
-
-
-
-
-
-
-
-        """
-
-        videoDevice = open('/dev/video0', 'rw')
-        vdIn = v4l2.v4l2_input()  
-
-        vf = v4l2.v4l2_format()
-        vfb = v4l2.v4l2_framebuffer()
-        fd = videoDevice.fileno()
-
-        cp = v4l2.v4l2_capability()
-
-
-        fcntl.ioctl(fd, v4l2.VIDIOC_QUERYCAP, cp)
-
-      #  fcntl.ioctl(fd, v4l2.VIDIOC_ENUMINPUT, vdIn)
-        
-
-
-        for i in range(len(vidoptionlist)):
-            try:
-                fcntl.ioctl(fd, vidoptionlist[i], v4l2.v4l2_querymenu())
-                print vidoptionlist[i]
-            except:
-                print "Fail"
-
-        sys.stdin.read()
-        print vf.win
-        print vf.pix
-    #    fcntl.ioctl(fd, v4l2.VIDIOC_G_FBUF, vfb)
-
-        sf = v4l2.v4l2_format()
-        rb = v4l2.v4l2_requestbuffers()
-        buf = v4l2.v4l2_buffer()
-
-
-        
-        
-
-   #     fcntl.ioctl(videoDevice, abs(v4l2.VIDIOC_REQBUFS), rb)
-
-
-
-            print m_capSrcFormat.fmt.pix.width
-
-    #        vBuffer = v4l2.v4l2_buffer()
-     #       reqBuffers = v4l2.v4l2_requestbuffers()
-            
-
-            ctypes.memset(id(reqBuffers), 0, ctypes.sizeof(reqBuffers))
-            
-
-            
-            dstFmt = QImage.Format_RGB888
-            devImg = QImage(m_capSrcFormat.fmt.pix.width, m_capSrcFormat.fmt.pix.height, dstFmt)
-            
-
-
-
-            target = QRectF(0, 0, devImg.width(), devImg.height())
-            source = QRectF(0, 0, devImg.width(), devImg.height())
-        
-            compImage = CompImage(self, target, devImg, source,\
-                                    self.selectedbrowser, self.livebrowser, \
-                                    self.label_15, None) 
-            self.scene.clear()
-            self.scene.addItem(compImage)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  #      self.phononFrame.setRect(self.graphicsView.sceneRect())        
-        self.movie_window = self.phononFrame
-
-
-        self.player = gst.parse_launch ("v4l2src ! autovideosink")
-        self.bus = self.player.get_bus()
-        
-
-        self.bus.add_signal_watch()
-        self.bus.enable_sync_message_emission()
-        self.bus.connect("message", self.on_message)
-        self.bus.connect("sync-message::element", self.on_sync_message)
-
-        
-
-        self.movie_window.mousePressEvent = self.Movie_Window_Clicked
-
-
-
-
-    def Movie_Window_Clicked(self, event):
-        print event.pos()
-
-
-
-
-    def closeEvent(self, event):
-        print "CLOSING!"
-        self.player.set_state(gst.STATE_NULL)
-    
-    def on_message(self, bus, message):
-        self.player.get_state()
-        t = message.type
-        if t == gst.MESSAGE_EOS:
-            self.player.set_state(gst.STATE_NULL)
-        elif t == gst.MESSAGE_ERROR:
-            err, debug = message.parse_error()
-            self.player.set_state(gst.STATE_NULL)
-            #This if statement fixes the stream display bug
-            if str(err) == "Could not write to resource.":            
-                self.player.set_state(gst.STATE_PLAYING)
-
-    def on_sync_message(self, bus, message):
-        if message.structure is None:
-            return
-        message_name = message.structure.get_name()
-        if message_name == "prepare-xwindow-id":
-            # Assign the viewport
-            imagesink = message.src
-            imagesink.set_property("force-aspect-ratio", True)   
-            imagesink.set_xwindow_id(self.movie_window.winId())
-
-
-    def on_startCapturePB_pressed(self):
-        self.player.set_state(gst.STATE_PLAYING)
-
-    def on_stopCapturePB_pressed(self):
-        self.player.set_state(gst.STATE_NULL)
-
-
-
-
-    """
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     def preferencesTriggered(self):
         prefDialog = PreferenceDialog(self)
@@ -622,7 +400,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
 
         print "File Open Not Functional"
 
-        """
+        
         path = QFileDialog.getOpenFileName(self,
             "Open File", self.path , str("Images (*raw *png)"))
 
@@ -678,7 +456,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
             self.scene.clear()
             self.scene.addItem(compImage)
             self.Image = Image
-        """
+        
     def ImageGenerator(self, path1, path2, path3, path4):
         width = 1000
         height = 1000

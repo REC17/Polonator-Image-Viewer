@@ -23,8 +23,8 @@
       <widget class="QWidget" name="scrollAreaWidgetContents">
        <property name="geometry">
         <rect>
-         <x>0</x>
-         <y>0</y>
+         <x>-11</x>
+         <y>-23</y>
          <width>1389</width>
          <height>1079</height>
         </rect>
@@ -33,7 +33,7 @@
         <item row="0" column="0">
          <widget class="QTabWidget" name="VideoWidget">
           <property name="currentIndex">
-           <number>0</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="tab_3">
            <attribute name="title">
@@ -113,7 +113,7 @@
               <x>1010</x>
               <y>150</y>
               <width>351</width>
-              <height>211</height>
+              <height>221</height>
              </rect>
             </property>
             <property name="frameShape">
@@ -122,435 +122,425 @@
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
-            <widget class="QPushButton" name="LoadComposite">
-             <property name="geometry">
-              <rect>
-               <x>40</x>
-               <y>170</y>
-               <width>75</width>
-               <height>23</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string>Load</string>
-             </property>
-            </widget>
-            <widget class="QComboBox" name="comboBox">
-             <property name="geometry">
-              <rect>
-               <x>140</x>
-               <y>170</y>
-               <width>69</width>
-               <height>22</height>
-              </rect>
-             </property>
-             <item>
-              <property name="text">
-               <string>All</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>3 Channels</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Channel 1</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Channel 2</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Channel 3</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Channel 4</string>
-              </property>
-             </item>
-            </widget>
-            <widget class="QPushButton" name="ClearButton">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="geometry">
-              <rect>
-               <x>230</x>
-               <y>170</y>
-               <width>75</width>
-               <height>23</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string>Clear</string>
-             </property>
-            </widget>
             <widget class="QWidget" name="layoutWidget">
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>21</y>
-               <width>341</width>
-               <height>171</height>
+               <y>10</y>
+               <width>350</width>
+               <height>212</height>
               </rect>
              </property>
-             <layout class="QGridLayout" name="gridLayout" columnstretch="1,0,0,0,3">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_24">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
+             <layout class="QVBoxLayout" name="verticalLayout">
+              <item>
+               <layout class="QGridLayout" name="gridLayout" columnstretch="1,0,0,0,3">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_24">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLabel" name="label_12">
+                  <property name="text">
+                   <string>Channel</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <widget class="QLabel" name="label_2">
+                  <property name="text">
+                   <string>Default</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="3">
+                 <widget class="QLabel" name="label_3">
+                  <property name="text">
+                   <string>Archive</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="4">
+                 <widget class="QLabel" name="label_5">
+                  <property name="text">
+                   <string>Filename</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="label_6">
+                  <property name="text">
+                   <string>Ch. 1</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QComboBox" name="channel1combobox">
+                  <item>
+                   <property name="text">
+                    <string>Red</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Green</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Blue</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Yellow</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Magenta</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Cyan</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>White</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <widget class="QRadioButton" name="C1Def">
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                  <property name="autoExclusive">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="3">
+                 <widget class="QRadioButton" name="C1Arc">
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="autoExclusive">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="4">
+                 <widget class="QLabel" name="c1label">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="label_23">
+                  <property name="text">
+                   <string>Ch. 2</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QComboBox" name="channel2combobox">
+                  <property name="currentIndex">
+                   <number>1</number>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>Red</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Green</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Blue</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Yellow</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Magenta</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Cyan</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>White</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="2" column="2">
+                 <widget class="QRadioButton" name="C2Def">
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                  <property name="autoExclusive">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="3">
+                 <widget class="QRadioButton" name="C2Arc">
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="autoExclusive">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="4">
+                 <widget class="QLabel" name="c2label">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="label_8">
+                  <property name="text">
+                   <string>Ch. 3</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QComboBox" name="channel3combobox">
+                  <property name="currentIndex">
+                   <number>2</number>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>Red</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Green</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Blue</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Yellow</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Magenta</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Cyan</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>White</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="3" column="2">
+                 <widget class="QRadioButton" name="C3Def">
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                  <property name="autoRepeat">
+                   <bool>false</bool>
+                  </property>
+                  <property name="autoExclusive">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="3">
+                 <widget class="QRadioButton" name="C3Arc">
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="autoExclusive">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="4">
+                 <widget class="QLabel" name="c3label">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="label_7">
+                  <property name="text">
+                   <string>Ch. 4</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QComboBox" name="channel4combobox">
+                  <property name="currentIndex">
+                   <number>3</number>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>Red</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Green</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Blue</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Yellow</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Magenta</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Cyan</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>White</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="4" column="2">
+                 <widget class="QRadioButton" name="C4Def">
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                  <property name="autoExclusive">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="3">
+                 <widget class="QRadioButton" name="C4Arc">
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="autoExclusive">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="4">
+                 <widget class="QLabel" name="c4label">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
-              <item row="0" column="1">
-               <widget class="QLabel" name="label_12">
-                <property name="text">
-                 <string>Channel</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
-               <widget class="QLabel" name="label_2">
-                <property name="text">
-                 <string>Default</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="3">
-               <widget class="QLabel" name="label_3">
-                <property name="text">
-                 <string>Archive</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="4">
-               <widget class="QLabel" name="label_5">
-                <property name="text">
-                 <string>Filename</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_6">
-                <property name="text">
-                 <string>Ch. 1</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QComboBox" name="channel1combobox">
-                <item>
-                 <property name="text">
-                  <string>Red</string>
-                 </property>
+              <item>
+               <layout class="QGridLayout" name="gridLayout_5">
+                <item row="0" column="0">
+                 <widget class="QPushButton" name="LoadComposite">
+                  <property name="text">
+                   <string>Load</string>
+                  </property>
+                 </widget>
                 </item>
-                <item>
-                 <property name="text">
-                  <string>Green</string>
-                 </property>
+                <item row="0" column="1">
+                 <widget class="QComboBox" name="comboBox">
+                  <item>
+                   <property name="text">
+                    <string>All</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>3 Channels</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Channel 1</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Channel 2</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Channel 3</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Channel 4</string>
+                   </property>
+                  </item>
+                 </widget>
                 </item>
-                <item>
-                 <property name="text">
-                  <string>Blue</string>
-                 </property>
+                <item row="0" column="2">
+                 <widget class="QPushButton" name="ClearButton">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="text">
+                   <string>Clear</string>
+                  </property>
+                 </widget>
                 </item>
-                <item>
-                 <property name="text">
-                  <string>Yellow</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Magenta</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Cyan</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>White</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="1" column="2">
-               <widget class="QRadioButton" name="C1Def">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-                <property name="autoExclusive">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="3">
-               <widget class="QRadioButton" name="C1Arc">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="autoExclusive">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="4">
-               <widget class="QLabel" name="c1label">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_23">
-                <property name="text">
-                 <string>Ch. 2</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QComboBox" name="channel2combobox">
-                <property name="currentIndex">
-                 <number>1</number>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>Red</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Green</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Blue</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Yellow</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Magenta</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Cyan</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>White</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="2" column="2">
-               <widget class="QRadioButton" name="C2Def">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-                <property name="autoExclusive">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="3">
-               <widget class="QRadioButton" name="C2Arc">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="autoExclusive">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="4">
-               <widget class="QLabel" name="c2label">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_8">
-                <property name="text">
-                 <string>Ch. 3</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QComboBox" name="channel3combobox">
-                <property name="currentIndex">
-                 <number>2</number>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>Red</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Green</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Blue</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Yellow</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Magenta</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Cyan</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>White</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="3" column="2">
-               <widget class="QRadioButton" name="C3Def">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-                <property name="autoRepeat">
-                 <bool>false</bool>
-                </property>
-                <property name="autoExclusive">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="3">
-               <widget class="QRadioButton" name="C3Arc">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="autoExclusive">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="4">
-               <widget class="QLabel" name="c3label">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="label_7">
-                <property name="text">
-                 <string>Ch. 4</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1">
-               <widget class="QComboBox" name="channel4combobox">
-                <property name="currentIndex">
-                 <number>3</number>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>Red</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Green</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Blue</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Yellow</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Magenta</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Cyan</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>White</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="4" column="2">
-               <widget class="QRadioButton" name="C4Def">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-                <property name="autoExclusive">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="3">
-               <widget class="QRadioButton" name="C4Arc">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="autoExclusive">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="4">
-               <widget class="QLabel" name="c4label">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
+               </layout>
               </item>
              </layout>
             </widget>
@@ -635,7 +625,7 @@
              <rect>
               <x>1020</x>
               <y>500</y>
-              <width>161</width>
+              <width>321</width>
               <height>16</height>
              </rect>
             </property>
@@ -966,20 +956,33 @@
            <widget class="QGraphicsView" name="VideoStreamWindow">
             <property name="geometry">
              <rect>
-              <x>10</x>
-              <y>10</y>
-              <width>1000</width>
-              <height>1000</height>
+              <x>0</x>
+              <y>60</y>
+              <width>1280</width>
+              <height>1030</height>
              </rect>
             </property>
            </widget>
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="lvStartPB">
             <property name="geometry">
              <rect>
-              <x>1020</x>
+              <x>10</x>
               <y>10</y>
-              <width>331</width>
-              <height>91</height>
+              <width>341</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Live View Start</string>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="lvStopPB">
+            <property name="geometry">
+             <rect>
+              <x>360</x>
+              <y>10</y>
+              <width>341</width>
+              <height>41</height>
              </rect>
             </property>
             <property name="text">
@@ -996,8 +999,8 @@
              <rect>
               <x>10</x>
               <y>10</y>
-              <width>941</width>
-              <height>741</height>
+              <width>1000</width>
+              <height>1000</height>
              </rect>
             </property>
             <property name="frameShape">
@@ -1007,30 +1010,43 @@
              <enum>QFrame::Raised</enum>
             </property>
            </widget>
-           <widget class="QPushButton" name="phononTestButton">
+           <widget class="QPushButton" name="startCapturePB">
             <property name="geometry">
              <rect>
-              <x>970</x>
+              <x>1040</x>
               <y>30</y>
-              <width>341</width>
+              <width>271</width>
               <height>141</height>
              </rect>
             </property>
             <property name="text">
-             <string>Phonon All Purpose Test Button</string>
+             <string>Start Capture</string>
             </property>
            </widget>
            <widget class="QProgressBar" name="progressBar">
             <property name="geometry">
              <rect>
-              <x>1040</x>
-              <y>190</y>
+              <x>1060</x>
+              <y>380</y>
               <width>231</width>
               <height>23</height>
              </rect>
             </property>
             <property name="value">
              <number>0</number>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="stopCapturePB">
+            <property name="geometry">
+             <rect>
+              <x>1040</x>
+              <y>180</y>
+              <width>271</width>
+              <height>141</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Stop Capture</string>
             </property>
            </widget>
           </widget>

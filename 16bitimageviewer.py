@@ -29,27 +29,43 @@ Created by Roger Conturie and Nick Conway on 2010-10-09.
 """
 
 import os
+import io
 import sys
 import math
 import numpy
 import time
+#import v4l2
+#import ctypes
+#import fcntl
+
+import v4l2capture
+import select
 import getpass
 import ui_16bitimagewindow #,png, itertools
+from PIL import Image
 from compositeImage import CompImage
 from preferenceDialog import PreferenceDialog
 from quadView import QuadView
+from vidImage import VidImage
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+"""
 import pygst, pygtk, gtk, gobject
 pygst.require("0.10")
 import gst
+"""
+
 
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
+
+
 import ConfigParser
 
-
+"""
+GLTICH: Enabling GTK threads causes the program to crash when opening files
+"""
 
 class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
     def __init__(self, parent=None):
@@ -70,6 +86,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
                 self.cParser.write(configFile)
         except:
             pass
+
 
         self.view = self.graphicsView
         self.scene = QGraphicsScene()
@@ -93,7 +110,6 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         self.compositeview4.setScene(self.compositescene4)
 
         
-
         self.lastcircle = []
         self.lastline = None
         self.compinstanceL = []
@@ -128,6 +144,168 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         self.connect(self.comboBox, SIGNAL( "currentIndexChanged(int)" )\
                         , self.comboChange)
         self.actionPreferences.triggered.connect(self.preferencesTriggered)
+
+        
+
+        self.size_x = 0
+        self.size_y = 0
+        self.video = None
+        self.devImg = None
+        self.dispGI = None
+        self.timer = QTimer()
+        QObject.connect(self.timer, SIGNAL("timeout()"), self.updateVideo)
+
+
+
+    def updateVideo(self):
+        self.videoscene.removeItem(self.dispGI)
+        select.select((self.video,), (), ())
+        image_data = self.video.read_and_queue()
+        self.devImg = QImage(image_data, self.size_x, self.size_y, QImage.Format_RGB888)
+        self.devImg.bits()
+        target = QRectF(0, 0, self.devImg.width(), self.devImg.height())
+        source = QRectF(0, 0, self.devImg.width(), self.devImg.height())
+        self.dispGI = VidImage(target, self.devImg, source)
+        self.scene.clear()
+        #if len(self.videoscene.items())> 0:
+        #    self.videoscene.removeItem(self.videoscene.items()[0])
+        self.videoscene.addItem(self.dispGI)
+        self.videoscene.update()
+
+    def on_lvStartPB_pressed(self):
+        print "LIVE START!"
+
+
+        self.video = v4l2capture.Video_device("/dev/video0")
+        self.size_x, self.size_y = self.video.set_format(1280, 1024)
+        self.video.create_buffers(1)
+        self.video.queue_all_buffers()
+        self.video.start()
+
+        self.timer.start()
+        """
+        video.close()
+        devImg = QImage(image_data, size_x, size_y, QImage.Format_RGB888)
+        devImg.bits()
+        target = QRectF(0, 0, devImg.width(), devImg.height())
+        source = QRectF(0, 0, devImg.width(), devImg.height())
+        dispGI = VidImage(target, devImg, source)
+        self.scene.clear()
+        self.videoscene.addItem(dispGI)
+        self.videoscene.update()
+        """
+
+    def on_lvStopPB_pressed(self):
+        print "LIVE STOP!"
+        self.timer.stop()
+
+
+
+
+
+
+
+
+
+
+        """
+
+        videoDevice = open('/dev/video0', 'rw')
+        vdIn = v4l2.v4l2_input()  
+
+        vf = v4l2.v4l2_format()
+        vfb = v4l2.v4l2_framebuffer()
+        fd = videoDevice.fileno()
+
+        cp = v4l2.v4l2_capability()
+
+
+        fcntl.ioctl(fd, v4l2.VIDIOC_QUERYCAP, cp)
+
+      #  fcntl.ioctl(fd, v4l2.VIDIOC_ENUMINPUT, vdIn)
+        
+
+
+        for i in range(len(vidoptionlist)):
+            try:
+                fcntl.ioctl(fd, vidoptionlist[i], v4l2.v4l2_querymenu())
+                print vidoptionlist[i]
+            except:
+                print "Fail"
+
+        sys.stdin.read()
+        print vf.win
+        print vf.pix
+    #    fcntl.ioctl(fd, v4l2.VIDIOC_G_FBUF, vfb)
+
+        sf = v4l2.v4l2_format()
+        rb = v4l2.v4l2_requestbuffers()
+        buf = v4l2.v4l2_buffer()
+
+
+        
+        
+
+   #     fcntl.ioctl(videoDevice, abs(v4l2.VIDIOC_REQBUFS), rb)
+
+
+
+            print m_capSrcFormat.fmt.pix.width
+
+    #        vBuffer = v4l2.v4l2_buffer()
+     #       reqBuffers = v4l2.v4l2_requestbuffers()
+            
+
+            ctypes.memset(id(reqBuffers), 0, ctypes.sizeof(reqBuffers))
+            
+
+            
+            dstFmt = QImage.Format_RGB888
+            devImg = QImage(m_capSrcFormat.fmt.pix.width, m_capSrcFormat.fmt.pix.height, dstFmt)
+            
+
+
+
+            target = QRectF(0, 0, devImg.width(), devImg.height())
+            source = QRectF(0, 0, devImg.width(), devImg.height())
+        
+            compImage = CompImage(self, target, devImg, source,\
+                                    self.selectedbrowser, self.livebrowser, \
+                                    self.label_15, None) 
+            self.scene.clear()
+            self.scene.addItem(compImage)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  #      self.phononFrame.setRect(self.graphicsView.sceneRect())        
         self.movie_window = self.phononFrame
 
 
@@ -139,6 +317,18 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         self.bus.enable_sync_message_emission()
         self.bus.connect("message", self.on_message)
         self.bus.connect("sync-message::element", self.on_sync_message)
+
+        
+
+        self.movie_window.mousePressEvent = self.Movie_Window_Clicked
+
+
+
+
+    def Movie_Window_Clicked(self, event):
+        print event.pos()
+
+
 
 
     def closeEvent(self, event):
@@ -152,16 +342,12 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
             self.player.set_state(gst.STATE_NULL)
         elif t == gst.MESSAGE_ERROR:
             err, debug = message.parse_error()
-            
-
             self.player.set_state(gst.STATE_NULL)
-
+            #This if statement fixes the stream display bug
             if str(err) == "Could not write to resource.":            
                 self.player.set_state(gst.STATE_PLAYING)
 
-
     def on_sync_message(self, bus, message):
-
         if message.structure is None:
             return
         message_name = message.structure.get_name()
@@ -172,21 +358,40 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
             imagesink.set_xwindow_id(self.movie_window.winId())
 
 
-    def on_phononTestButton_pressed(self):
+    def on_startCapturePB_pressed(self):
         self.player.set_state(gst.STATE_PLAYING)
+
+    def on_stopCapturePB_pressed(self):
+        self.player.set_state(gst.STATE_NULL)
+
+
+
+
+    """
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def preferencesTriggered(self):
         prefDialog = PreferenceDialog(self)
         prefDialog.show()
-
-    def on_pushButton_released(self):
-        if self.process == None:
-            cmd = "python " + "videostream.py"
-            self.process_start(cmd)
-        else:
-            self.process.kill()
-            print "killing process"
-            self.process = None
 
     def process_start(self, cmd):
         self.process = QProcess()
@@ -197,7 +402,6 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
                         self.process_finished)
         
     def process_readyRead(self):
-
         self.count = self.count + 1
         try:
             out = self.process.readAll() #readAllStandardOutput()
@@ -216,7 +420,6 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         self.count = 0
         
     def on_distancebutton_released(self):
-
         ##########################################
         ##########################################
         ###         ####   ####    #####    ######
@@ -248,7 +451,6 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         #print len(freq)
         plt.plot(freq, abs(sp.real))#, freq, sp.imag)
         plt.show()
-        
         ##########################################
         ##########################################
         ###         ####   ####    #####    ######
@@ -292,7 +494,6 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
             self.loadinit("3", "Clear")
         if self.comboBox.currentText() == "Channel 4":
             self.loadinit("4", "Clear")
-                     
         
     def keyPressEvent(self, event):
         if event.key() == 16777248:
@@ -324,34 +525,34 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
                 if self.C1Def.isChecked() == True:
                     self.path1 = self.cParser.get('PREFIMGPATHS','Path1')
                 else:
-                    self.path1 = QFileDialog.getOpenFileName(self,
+                    self.path1 = QFileDialog.getOpenFileName(self, \
                             "Open File", self.path , str("Images (*raw)"))
                 self.c1label.setText(str(self.path1.split("/")[-1]))
-            
+            print "1"
             if type == "2" or type == "A" or type == "3C":
                 if self.C2Def.isChecked() == True:
                     self.path2 = self.cParser.get('PREFIMGPATHS','Path2')
                 else:     
-                    self.path2 = QFileDialog.getOpenFileName(self,
+                    self.path2 = QFileDialog.getOpenFileName(self, \
                             "Open File", self.path , str("Images (*raw)"))
                 self.c2label.setText(str(self.path2.split("/")[-1]))
-            
+            print "2"
             if type == "3" or type == "A" or type == "3C":
                 if self.C3Def.isChecked() == True:
                     self.path3 = self.cParser.get('PREFIMGPATHS','Path3')
                 else:
-                    self.path3 = QFileDialog.getOpenFileName(self,
+                    self.path3 = QFileDialog.getOpenFileName(self, \
                             "Open File", self.path , str("Images (*raw)"))
                 self.c3label.setText(str(self.path3.split("/")[-1]))
-            
+            print "3"
             if type == "4" or type == "A":
                 if self.C4Def.isChecked() == True:
                     self.path4 = self.cParser.get('PREFIMGPATHS','Path4')
                 else:
-                    self.path4 = QFileDialog.getOpenFileName(self,
+                    self.path4 = QFileDialog.getOpenFileName(self, \
                             "Open File", self.path , str("Images (*raw)"))
                 self.c4label.setText(str(self.path4.split("/")[-1]))
-
+            print "4"
         if mode == "Clear":
             if type == '1' or type == 'A' or type == '3C':
                 self.path1 = None
@@ -365,8 +566,9 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
             if type == '4' or type == 'A':
                 self.path4 = None
                 self.c4label.setText('')
-
+        print "5"
         self.ImageGenerator(self.path1, self.path2, self.path3, self.path4)
+        print "6"
 
     def on_DotOn_released(self):
         self.dotpermission = True
@@ -418,13 +620,18 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
     
     def OpenClicked(self):
 
+        print "File Open Not Functional"
+
+        """
         path = QFileDialog.getOpenFileName(self,
             "Open File", self.path , str("Images (*raw *png)"))
+
+      
         
         ftype = str(path.split(".")[-1])        
         
         if ftype == "raw":
-            self.ImageGenerator(path, None, None)
+            self.ImageGenerator(path, None, None, None)
       #  image_file = open(path)
 
         if ftype == "png":
@@ -471,7 +678,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
             self.scene.clear()
             self.scene.addItem(compImage)
             self.Image = Image
-
+        """
     def ImageGenerator(self, path1, path2, path3, path4):
         width = 1000
         height = 1000
@@ -625,7 +832,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
 
 
 def main():
-    gtk.gdk.threads_init()
+#    gtk.gdk.threads_init()
     app = QApplication(sys.argv)
     window = STBimageviewer()
     window.show()

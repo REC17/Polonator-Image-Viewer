@@ -104,7 +104,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         self.process = None
         self.videoview = self.VideoStreamWindow
         self.videoscene = QGraphicsScene()
-        self.videoscene.setSceneRect(QRectF(0, 0, 960, 768))
+        self.videoscene.setSceneRect(QRectF(0, 0, 1280, 800))
         
         Rectangle = RectangleSection(QPointF(0,0))
         self.videoscene.addItem(Rectangle)
@@ -158,58 +158,69 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
 
 
 
-
     def videoViewPress(self, event):
-        x, y = event.pos().x(), event.pos().y()
-        mapScene =  self.videoview.mapToScene(x, y)
-        x, y, = mapScene.x(), mapScene.y()
+        if event.button() == 1:
+            print "Hello"
+            x, y = event.pos().x(), event.pos().y()
+            mapScene =  self.videoview.mapToScene(x, y)
+            x, y = mapScene.x(), mapScene.y()
 
-        position = QPointF(x, y)
-        self.rs = RectangleSection(position)
-  #      self.rs.setPos(position)
-        self.videoscene.addItem(self.rs)
+            position = QPointF(x, y)
+            self.rs = RectangleSection(position)
+      #      self.rs.setPos(position)
+            self.videoscene.addItem(self.rs)
 
+        if event.button() == 2:
+            print "RIGHT CLICK"
+            matrix = self.videoview.matrix()
+            matrix.reset()
+            self.videoview.setMatrix(matrix)
 
     def videoViewRelease(self, event):
-        self.videoscene.removeItem(self.rs)
-        x = self.rs.position.x()
-        y = self.rs.position.y()
-        width = self.rs.width
-        height = self.rs.height
+        if event.button() == 1:
+            self.videoscene.removeItem(self.rs)
+            x = self.rs.position.x()
+            y = self.rs.position.y()
+            width = self.rs.width
+            height = self.rs.height
 
-        matrix = self.videoview.matrix()
-#        print matrix.m11()
-#        print matrix.m22()
-        matrix.reset()
+            matrix = self.videoview.matrix()
 
-        matrix.scale(1280/width, 1024/height)
-        self.videoview.setMatrix(matrix)
-   #     self.videoview.centerOn(event.pos().x(), event.pos().y())
 
-        self.videoview.centerOn(x + 0.5*width, y + 0.5*height)
+            matrix.reset()
 
-        self.rs = None
+            matrix.scale(1280/width, 800/height)
+            self.videoview.setMatrix(matrix)
+       #     self.videoview.centerOn(event.pos().x(), event.pos().y())
+
+            self.videoview.centerOn(x + 0.5*width, y + 0.5*height)
+
+            self.rs = None
 
     def videoViewMove(self, event):
-        x, y = event.pos().x(), event.pos().y()
-        mapScene =  self.videoview.mapToScene(x, y)
-        x, y, = mapScene.x(), mapScene.y()
+
 
         if self.rs != None:
+            x, y = event.pos().x(), event.pos().y()
+            mapScene =  self.videoview.mapToScene(x, y)
+            x, y, = mapScene.x(), mapScene.y()
+
             aspRNum = x - self.rs.x()
             aspRDom = y - self.rs.y()
-            if aspRNum < 0 or aspRDom < 0:
-                print "NEGATIVE!"
-            aspectRatio = self.dispGI.boundingRect().width()/self.dispGI.boundingRect().height()
-            appliedRatio = aspRNum/aspRDom
-            if appliedRatio >= aspectRatio:
-                self.rs.height = y - self.rs.y()
-                self.rs.width = 1.6*(y - self.rs.y())
-            if appliedRatio < aspectRatio:
-                self.rs.width = x - self.rs.x()
-                self.rs.height = (x - self.rs.x())/aspectRatio
-            self.rs.update()
-
+            if aspRNum > 0 and aspRDom > 0:    
+                aspectRatio = self.dispGI.boundingRect().width()/self.dispGI.boundingRect().height()
+                appliedRatio = aspRNum/aspRDom
+                if appliedRatio >= aspectRatio:
+                    self.rs.height = y - self.rs.y()
+                    self.rs.width = 1.6*(y - self.rs.y())
+                if appliedRatio < aspectRatio:
+                    self.rs.width = x - self.rs.x()
+                    self.rs.height = (x - self.rs.x())/aspectRatio
+                self.rs.update()
+            else:
+                self.rs.width = 1
+                self.rs.height = 1
+                self.rs.update()
 
     def updateVideo(self):
         try:

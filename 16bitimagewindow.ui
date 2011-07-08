@@ -993,8 +993,8 @@
              <rect>
               <x>10</x>
               <y>60</y>
-              <width>960</width>
-              <height>768</height>
+              <width>1280</width>
+              <height>800</height>
              </rect>
             </property>
             <property name="verticalScrollBarPolicy">

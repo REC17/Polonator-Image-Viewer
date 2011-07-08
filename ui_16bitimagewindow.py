@@ -2,14 +2,13 @@
 
 # Form implementation generated from reading ui file '16bitimagewindow.ui'
 #
-# Created: Fri Jul  8 12:58:06 2011
+# Created: Fri Jul  8 16:03:42 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
 from customqgraphicsview import CustomQGraphicsView
-
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -351,7 +350,7 @@ class Ui_MainWindow(object):
         self.lvStopPB.setGeometry(QtCore.QRect(360, 10, 341, 41))
         self.lvStopPB.setObjectName(_fromUtf8("lvStopPB"))
         self.VideoStreamWindow = CustomQGraphicsView(self.tab_4)
-        self.VideoStreamWindow.setGeometry(QtCore.QRect(10, 60, 960, 768))
+        self.VideoStreamWindow.setGeometry(QtCore.QRect(10, 60, 1280, 800))
         self.VideoStreamWindow.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.VideoStreamWindow.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.VideoStreamWindow.setObjectName(_fromUtf8("VideoStreamWindow"))

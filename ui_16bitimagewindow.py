@@ -2,12 +2,13 @@
 
 # Form implementation generated from reading ui file '16bitimagewindow.ui'
 #
-# Created: Thu Jul  7 12:39:51 2011
+# Created: Fri Jul  8 12:58:06 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+from customqgraphicsview import CustomQGraphicsView
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -17,7 +18,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(1416, 1162)
+        MainWindow.resize(1411, 1174)
         self.centralWidget = QtGui.QWidget(MainWindow)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
         self.gridLayout_4 = QtGui.QGridLayout(self.centralWidget)
@@ -26,11 +27,13 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(False)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(-11, -23, 1389, 1079))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 1389, 1079))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.gridLayout_3 = QtGui.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
         self.VideoWidget = QtGui.QTabWidget(self.scrollAreaWidgetContents)
+        self.VideoWidget.setEnabled(True)
+        self.VideoWidget.setMinimumSize(QtCore.QSize(0, 0))
         self.VideoWidget.setObjectName(_fromUtf8("VideoWidget"))
         self.tab_3 = QtGui.QWidget()
         self.tab_3.setObjectName(_fromUtf8("tab_3"))
@@ -216,7 +219,7 @@ class Ui_MainWindow(object):
         self.ClearButton.setObjectName(_fromUtf8("ClearButton"))
         self.gridLayout_5.addWidget(self.ClearButton, 0, 2, 1, 1)
         self.verticalLayout.addLayout(self.gridLayout_5)
-        self.graphicsView = QtGui.QGraphicsView(self.tab_3)
+        self.graphicsView = CustomQGraphicsView(self.tab_3)
         self.graphicsView.setGeometry(QtCore.QRect(10, 10, 1000, 1000))
         self.graphicsView.setObjectName(_fromUtf8("graphicsView"))
         self.distancebutton = QtGui.QPushButton(self.tab_3)
@@ -250,13 +253,13 @@ class Ui_MainWindow(object):
         self.SearchButton = QtGui.QPushButton(self.tab_3)
         self.SearchButton.setGeometry(QtCore.QRect(1210, 520, 75, 23))
         self.SearchButton.setObjectName(_fromUtf8("SearchButton"))
-        self.label_15 = QtGui.QLabel(self.tab_3)
-        self.label_15.setGeometry(QtCore.QRect(1020, 560, 141, 16))
-        self.label_15.setObjectName(_fromUtf8("label_15"))
+        self.pixelValueBrowser = QtGui.QLabel(self.tab_3)
+        self.pixelValueBrowser.setGeometry(QtCore.QRect(1020, 560, 141, 16))
+        self.pixelValueBrowser.setObjectName(_fromUtf8("pixelValueBrowser"))
         self.VideoWidget.addTab(self.tab_3, _fromUtf8(""))
         self.tab_5 = QtGui.QWidget()
         self.tab_5.setObjectName(_fromUtf8("tab_5"))
-        self.graphicsView_2 = QtGui.QGraphicsView(self.tab_5)
+        self.graphicsView_2 = CustomQGraphicsView(self.tab_5)
         self.graphicsView_2.setGeometry(QtCore.QRect(10, 10, 500, 500))
         self.graphicsView_2.setObjectName(_fromUtf8("graphicsView_2"))
         self.LivetextBrowser_2 = QtGui.QLabel(self.tab_5)
@@ -272,15 +275,15 @@ class Ui_MainWindow(object):
         self.label_10 = QtGui.QLabel(self.tab_5)
         self.label_10.setGeometry(QtCore.QRect(1020, 90, 51, 16))
         self.label_10.setObjectName(_fromUtf8("label_10"))
-        self.graphicsView_3 = QtGui.QGraphicsView(self.tab_5)
+        self.graphicsView_3 = CustomQGraphicsView(self.tab_5)
         self.graphicsView_3.setGeometry(QtCore.QRect(510, 10, 500, 500))
         self.graphicsView_3.setFrameShape(QtGui.QFrame.StyledPanel)
         self.graphicsView_3.setFrameShadow(QtGui.QFrame.Sunken)
         self.graphicsView_3.setObjectName(_fromUtf8("graphicsView_3"))
-        self.graphicsView_4 = QtGui.QGraphicsView(self.tab_5)
+        self.graphicsView_4 = CustomQGraphicsView(self.tab_5)
         self.graphicsView_4.setGeometry(QtCore.QRect(10, 510, 500, 500))
         self.graphicsView_4.setObjectName(_fromUtf8("graphicsView_4"))
-        self.graphicsView_5 = QtGui.QGraphicsView(self.tab_5)
+        self.graphicsView_5 = CustomQGraphicsView(self.tab_5)
         self.graphicsView_5.setGeometry(QtCore.QRect(510, 510, 500, 500))
         self.graphicsView_5.setObjectName(_fromUtf8("graphicsView_5"))
         self.label_17 = QtGui.QLabel(self.tab_5)
@@ -341,15 +344,17 @@ class Ui_MainWindow(object):
         self.VideoWidget.addTab(self.tab_5, _fromUtf8(""))
         self.tab_4 = QtGui.QWidget()
         self.tab_4.setObjectName(_fromUtf8("tab_4"))
-        self.VideoStreamWindow = QtGui.QGraphicsView(self.tab_4)
-        self.VideoStreamWindow.setGeometry(QtCore.QRect(0, 60, 1280, 1030))
-        self.VideoStreamWindow.setObjectName(_fromUtf8("VideoStreamWindow"))
         self.lvStartPB = QtGui.QPushButton(self.tab_4)
         self.lvStartPB.setGeometry(QtCore.QRect(10, 10, 341, 41))
         self.lvStartPB.setObjectName(_fromUtf8("lvStartPB"))
         self.lvStopPB = QtGui.QPushButton(self.tab_4)
         self.lvStopPB.setGeometry(QtCore.QRect(360, 10, 341, 41))
         self.lvStopPB.setObjectName(_fromUtf8("lvStopPB"))
+        self.VideoStreamWindow = CustomQGraphicsView(self.tab_4)
+        self.VideoStreamWindow.setGeometry(QtCore.QRect(10, 60, 960, 768))
+        self.VideoStreamWindow.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.VideoStreamWindow.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.VideoStreamWindow.setObjectName(_fromUtf8("VideoStreamWindow"))
         self.VideoWidget.addTab(self.tab_4, _fromUtf8(""))
         self.phononTab = QtGui.QWidget()
         self.phononTab.setObjectName(_fromUtf8("phononTab"))
@@ -374,7 +379,7 @@ class Ui_MainWindow(object):
         self.gridLayout_4.addWidget(self.scrollArea, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtGui.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 1416, 29))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 1411, 29))
         self.menuBar.setObjectName(_fromUtf8("menuBar"))
         self.menuFile = QtGui.QMenu(self.menuBar)
         self.menuFile.setObjectName(_fromUtf8("menuFile"))
@@ -468,7 +473,7 @@ class Ui_MainWindow(object):
         self.label_13.setText(QtGui.QApplication.translate("MainWindow", "x", None, QtGui.QApplication.UnicodeUTF8))
         self.label_14.setText(QtGui.QApplication.translate("MainWindow", "y", None, QtGui.QApplication.UnicodeUTF8))
         self.SearchButton.setText(QtGui.QApplication.translate("MainWindow", "Search", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_15.setText(QtGui.QApplication.translate("MainWindow", "Pixel Value", None, QtGui.QApplication.UnicodeUTF8))
+        self.pixelValueBrowser.setText(QtGui.QApplication.translate("MainWindow", "Pixel Value", None, QtGui.QApplication.UnicodeUTF8))
         self.VideoWidget.setTabText(self.VideoWidget.indexOf(self.tab_3), QtGui.QApplication.translate("MainWindow", "Image Viewer", None, QtGui.QApplication.UnicodeUTF8))
         self.label_9.setText(QtGui.QApplication.translate("MainWindow", "Selected Point History:", None, QtGui.QApplication.UnicodeUTF8))
         self.label_10.setText(QtGui.QApplication.translate("MainWindow", "Live", None, QtGui.QApplication.UnicodeUTF8))
@@ -483,7 +488,7 @@ class Ui_MainWindow(object):
         self.MagnifyPushButton.setText(QtGui.QApplication.translate("MainWindow", "Turn On Magnifying Glass", None, QtGui.QApplication.UnicodeUTF8))
         self.VideoWidget.setTabText(self.VideoWidget.indexOf(self.tab_5), QtGui.QApplication.translate("MainWindow", "Composite", None, QtGui.QApplication.UnicodeUTF8))
         self.lvStartPB.setText(QtGui.QApplication.translate("MainWindow", "Live View Start", None, QtGui.QApplication.UnicodeUTF8))
-        self.lvStopPB.setText(QtGui.QApplication.translate("MainWindow", "Live View Start", None, QtGui.QApplication.UnicodeUTF8))
+        self.lvStopPB.setText(QtGui.QApplication.translate("MainWindow", "Live View Stop", None, QtGui.QApplication.UnicodeUTF8))
         self.VideoWidget.setTabText(self.VideoWidget.indexOf(self.tab_4), QtGui.QApplication.translate("MainWindow", "Video Stream", None, QtGui.QApplication.UnicodeUTF8))
         self.startCapturePB.setText(QtGui.QApplication.translate("MainWindow", "Start Capture", None, QtGui.QApplication.UnicodeUTF8))
         self.stopCapturePB.setText(QtGui.QApplication.translate("MainWindow", "Stop Capture", None, QtGui.QApplication.UnicodeUTF8))

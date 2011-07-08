@@ -50,6 +50,8 @@ class CompImage(QGraphicsItem):
         painter.drawImage(self.target, self.Image, self.source)
         painter.drawRect(self.target)
 
+
+
 class CircleMarker(QGraphicsItem):
     def __init__(self, mainWin, position, futureparent):
         super(CircleMarker, self).__init__()

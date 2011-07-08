@@ -37,6 +37,8 @@ import v4l2capture
 import select
 import getpass
 import ui_16bitimagewindow #,png, itertools
+from rectItem import RectangleSection
+from customqgraphicsview import CustomQGraphicsView
 from PIL import Image
 from compositeImage import CompImage
 from preferenceDialog import PreferenceDialog
@@ -102,6 +104,11 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         self.process = None
         self.videoview = self.VideoStreamWindow
         self.videoscene = QGraphicsScene()
+        self.videoscene.setSceneRect(QRectF(0, 0, 960, 768))
+        
+        Rectangle = RectangleSection(QPointF(0,0))
+        self.videoscene.addItem(Rectangle)
+
         self.videoview.setScene(self.videoscene)
         self.count = 0
         self.path = QDir.homePath()
@@ -138,29 +145,108 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         self.timer = QTimer()
         QObject.connect(self.timer, SIGNAL("timeout()"), self.updateVideo)
 
+        self.rs = None
+        self.videoview.mousePressEvent = self.videoViewPress
+        self.videoview.mouseReleaseEvent = self.videoViewRelease
+        self.videoview.mouseMoveEvent = self.videoViewMove
+
+
+
+   #     self.videoview.translate(0, 0)
+   #     self.videoview.update()
+
+
+
+
+
+    def videoViewPress(self, event):
+        x, y = event.pos().x(), event.pos().y()
+        mapScene =  self.videoview.mapToScene(x, y)
+        x, y, = mapScene.x(), mapScene.y()
+
+        position = QPointF(x, y)
+        self.rs = RectangleSection(position)
+  #      self.rs.setPos(position)
+        self.videoscene.addItem(self.rs)
+
+
+    def videoViewRelease(self, event):
+        self.videoscene.removeItem(self.rs)
+        x = self.rs.position.x()
+        y = self.rs.position.y()
+        width = self.rs.width
+        height = self.rs.height
+
+        matrix = self.videoview.matrix()
+#        print matrix.m11()
+#        print matrix.m22()
+        matrix.reset()
+
+        matrix.scale(1280/width, 1024/height)
+        self.videoview.setMatrix(matrix)
+   #     self.videoview.centerOn(event.pos().x(), event.pos().y())
+
+        self.videoview.centerOn(x + 0.5*width, y + 0.5*height)
+
+        self.rs = None
+
+    def videoViewMove(self, event):
+        x, y = event.pos().x(), event.pos().y()
+        mapScene =  self.videoview.mapToScene(x, y)
+        x, y, = mapScene.x(), mapScene.y()
+
+        if self.rs != None:
+    #        self.rs.width = event.pos().x() - self.rs.x() + 10
+     #       self.rs.height = event.pos().y() - self.rs.y() + 10
+      #      self.rs.update()
+            aspectRatio = self.dispGI.boundingRect().width()/self.dispGI.boundingRect().height()
+            appliedRatio = (x - self.rs.x())/(y - self.rs.y())
+            if appliedRatio >= aspectRatio:
+                self.rs.height = y - self.rs.y()
+                self.rs.width = 1.6*(y - self.rs.y())
+            if appliedRatio < aspectRatio:
+                self.rs.width = x - self.rs.x()
+                self.rs.height = (x - self.rs.x())/aspectRatio
+            self.rs.update()
+
+
     def updateVideo(self):
-        self.videoscene.removeItem(self.dispGI)
-        select.select((self.video,), (), ())
-        image_data = self.video.read_and_queue()
-        self.devImg = QImage(image_data, self.size_x, self.size_y,\
-                                                     QImage.Format_RGB888)
-        self.devImg.bits()
-        target = QRectF(0, 0, self.devImg.width(), self.devImg.height())
-        source = QRectF(0, 0, self.devImg.width(), self.devImg.height())
-        self.dispGI = VidImage(target, self.devImg, source)
-        self.scene.clear()
-        #if len(self.videoscene.items())> 0:
-        #    self.videoscene.removeItem(self.videoscene.items()[0])
-        self.videoscene.addItem(self.dispGI)
-        self.videoscene.update()
+        try:
+            image_data = self.video.read_and_queue()
+            self.videoscene.removeItem(self.dispGI)
+            select.select((self.video,), (), ())
+            self.devImg = QImage(image_data, self.size_x, self.size_y,\
+                                                         QImage.Format_RGB888)
+            self.devImg.bits() #Necessary to prevent Seg Fault (unknown why)
+            target = QRectF(0, 0, self.devImg.width(), self.devImg.height())
+            source = QRectF(0, 0, self.devImg.width(), self.devImg.height())
+            self.dispGI = VidImage(self, target, self.devImg, source)
+            self.scene.clear()
+            self.videoscene.addItem(self.dispGI)
+            self.dispGI.setZValue(-1)
+            self.videoscene.update()
+        except:
+            pass
 
     def on_lvStartPB_pressed(self):
         print "LIVE START!"
-        self.video = v4l2capture.Video_device("/dev/video0")
+        self.video = v4l2capture.Video_device("/dev/video1")
         self.size_x, self.size_y = self.video.set_format(1280, 1024)
         self.video.create_buffers(1)
         self.video.queue_all_buffers()
         self.video.start()
+        select.select((self.video,), (), ())
+        image_data = self.video.read_and_queue()
+        self.devImg = QImage(image_data, self.size_x, self.size_y,\
+                                                     QImage.Format_RGB888)
+        self.devImg.bits() #Necessary to prevent Seg Fault (unknown why)
+        target = QRectF(0, 0, self.devImg.width(), self.devImg.height())
+        source = QRectF(0, 0, self.devImg.width(), self.devImg.height())
+        self.dispGI = VidImage(self, target, self.devImg, source)
+        self.scene.clear()
+        self.videoscene.addItem(self.dispGI)
+        self.dispGI.setZValue(-1)
+        self.videoscene.update()
         self.timer.start()
 
     def on_lvStopPB_pressed(self):
@@ -452,7 +538,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
             target = QRectF(0, 0, Image.width(), Image.height())
             source = QRectF(0, 0, Image.width(), Image.height())
             compImage = CompImage(target, Image, source, self.selectedbrowser,\
-                                    self.livebrowser, self.label_15, channel1) 
+                                    self.livebrowser, self.pixelValueBrowser, channel1) 
             self.scene.clear()
             self.scene.addItem(compImage)
             self.Image = Image
@@ -565,7 +651,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
     
         compImage = CompImage(self, target, Image, source,\
                                 self.selectedbrowser, self.livebrowser, \
-                                self.label_15, image_array_2D1) 
+                                self.pixelValueBrowser, image_array_2D1) 
         self.scene.clear()
         self.scene.addItem(compImage)
         self.Image = Image
@@ -610,7 +696,6 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
 
 
 def main():
-#    gtk.gdk.threads_init()
     app = QApplication(sys.argv)
     window = STBimageviewer()
     window.show()

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1416</width>
-    <height>1162</height>
+    <width>1411</width>
+    <height>1174</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,8 +23,8 @@
       <widget class="QWidget" name="scrollAreaWidgetContents">
        <property name="geometry">
         <rect>
-         <x>-11</x>
-         <y>-23</y>
+         <x>0</x>
+         <y>0</y>
          <width>1389</width>
          <height>1079</height>
         </rect>
@@ -32,6 +32,15 @@
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
          <widget class="QTabWidget" name="VideoWidget">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="currentIndex">
            <number>2</number>
           </property>
@@ -682,7 +691,7 @@
              <string>Search</string>
             </property>
            </widget>
-           <widget class="QLabel" name="label_15">
+           <widget class="QLabel" name="pixelValueBrowser">
             <property name="geometry">
              <rect>
               <x>1020</x>
@@ -953,16 +962,6 @@
            <attribute name="title">
             <string>Video Stream</string>
            </attribute>
-           <widget class="QGraphicsView" name="VideoStreamWindow">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>60</y>
-              <width>1280</width>
-              <height>1030</height>
-             </rect>
-            </property>
-           </widget>
            <widget class="QPushButton" name="lvStartPB">
             <property name="geometry">
              <rect>
@@ -986,7 +985,23 @@
              </rect>
             </property>
             <property name="text">
-             <string>Live View Start</string>
+             <string>Live View Stop</string>
+            </property>
+           </widget>
+           <widget class="QGraphicsView" name="VideoStreamWindow">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>60</y>
+              <width>960</width>
+              <height>768</height>
+             </rect>
+            </property>
+            <property name="verticalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="horizontalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
             </property>
            </widget>
           </widget>
@@ -1063,7 +1078,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1416</width>
+     <width>1411</width>
      <height>29</height>
     </rect>
    </property>

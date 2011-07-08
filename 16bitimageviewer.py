@@ -196,11 +196,12 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         x, y, = mapScene.x(), mapScene.y()
 
         if self.rs != None:
-    #        self.rs.width = event.pos().x() - self.rs.x() + 10
-     #       self.rs.height = event.pos().y() - self.rs.y() + 10
-      #      self.rs.update()
+            aspRNum = x - self.rs.x()
+            aspRDom = y - self.rs.y()
+            if aspRNum < 0 or aspRDom < 0:
+                print "NEGATIVE!"
             aspectRatio = self.dispGI.boundingRect().width()/self.dispGI.boundingRect().height()
-            appliedRatio = (x - self.rs.x())/(y - self.rs.y())
+            appliedRatio = aspRNum/aspRDom
             if appliedRatio >= aspectRatio:
                 self.rs.height = y - self.rs.y()
                 self.rs.width = 1.6*(y - self.rs.y())
@@ -252,6 +253,22 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
     def on_lvStopPB_pressed(self):
         print "LIVE STOP!"
         self.timer.stop()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def preferencesTriggered(self):
         prefDialog = PreferenceDialog(self)

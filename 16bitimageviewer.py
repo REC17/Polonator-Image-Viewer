@@ -38,7 +38,6 @@ import select
 import getpass
 import ui_16bitimagewindow #,png, itertools
 from rectItem import RectangleSection
-from customqgraphicsview import CustomQGraphicsView
 from PIL import Image
 from compositeImage import CompImage
 from preferenceDialog import PreferenceDialog
@@ -150,14 +149,6 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
         self.videoview.mouseReleaseEvent = self.videoViewRelease
         self.videoview.mouseMoveEvent = self.videoViewMove
 
-
-
-   #     self.videoview.translate(0, 0)
-   #     self.videoview.update()
-
-
-
-
     def videoViewPress(self, event):
         if event.button() == 1:
             print "Hello"
@@ -183,12 +174,8 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
             y = self.rs.position.y()
             width = self.rs.width
             height = self.rs.height
-
             matrix = self.videoview.matrix()
-
-
             matrix.reset()
-
             matrix.scale(1280/width, 800/height)
             self.videoview.setMatrix(matrix)
        #     self.videoview.centerOn(event.pos().x(), event.pos().y())
@@ -198,8 +185,6 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
             self.rs = None
 
     def videoViewMove(self, event):
-
-
         if self.rs != None:
             x, y = event.pos().x(), event.pos().y()
             mapScene =  self.videoview.mapToScene(x, y)
@@ -224,9 +209,9 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
 
     def updateVideo(self):
         try:
+            select.select((self.video,), (), ())
             image_data = self.video.read_and_queue()
             self.videoscene.removeItem(self.dispGI)
-            select.select((self.video,), (), ())
             self.devImg = QImage(image_data, self.size_x, self.size_y,\
                                                          QImage.Format_RGB888)
             self.devImg.bits() #Necessary to prevent Seg Fault (unknown why)
@@ -242,8 +227,8 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
 
     def on_lvStartPB_pressed(self):
         print "LIVE START!"
-        self.video = v4l2capture.Video_device("/dev/video1")
-        self.size_x, self.size_y = self.video.set_format(1280, 1024)
+        self.video = v4l2capture.Video_device("/dev/video0")
+        self.size_x, self.size_y = self.video.set_format(1280, 800)
         self.video.create_buffers(1)
         self.video.queue_all_buffers()
         self.video.start()
@@ -264,22 +249,6 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
     def on_lvStopPB_pressed(self):
         print "LIVE STOP!"
         self.timer.stop()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     def preferencesTriggered(self):
         prefDialog = PreferenceDialog(self)
@@ -459,7 +428,8 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
                 self.path4 = None
                 self.c4label.setText('')
         print "5"
-        self.ImageGenerator(self.path1, self.path2, self.path3, self.path4)
+        IG = ImageGenerator(mainwin)
+        IG.generate(self.path1, self.path2, self.path3, self.path4)
         print "6"
 
     def on_DotOn_released(self):
@@ -570,7 +540,7 @@ class STBimageviewer(QMainWindow, ui_16bitimagewindow.Ui_MainWindow):
             self.scene.clear()
             self.scene.addItem(compImage)
             self.Image = Image
-        
+    
     def ImageGenerator(self, path1, path2, path3, path4):
         width = 1000
         height = 1000
